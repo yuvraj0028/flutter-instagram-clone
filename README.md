@@ -31,12 +31,12 @@ This project is built using the reference of a youtube tutorial.
 
 ## Installation
 
-After cloning this repository, migrate to `instagram-flutter-clone` folder. Then, follow the following steps:
+After cloning this repository, migrate to `insta_clone` folder. Then, follow the following steps:
 
 - Create Firebase Project
 - Enable Authentication
 - Make Firestore Rules
-- Create Android, iOS & Web Apps
+- Create Android, iOS Apps
 
 ```bash
   flutter pub get
