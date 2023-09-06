@@ -7,12 +7,12 @@ A completely Responsive Instagram App- Works on Android & iOS!
 This project is built using the reference of a youtube tutorial.
 
 <p>
-    <a href="https://youtu.be/BBccK1zTgxw">Rivaan Ranavat Youtube Tutorial</a>
+    <a href="https://youtu.be/BBccK1zTgxw">Rivaan Ranawat Youtube Tutorial</a>
 </p>
 
 <p>
     <a href="https://github.com/RivaanRanawat/instagram-flutter-clone">
-        Rivaan Ranavat GitHub Repository
+        Rivaan Ranawat GitHub Repository
     </a>
 </p>
 
