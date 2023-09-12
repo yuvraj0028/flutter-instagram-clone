@@ -26,6 +26,9 @@ This project is built using the reference of a youtube tutorial.
 - Search Users
 - Follow Users
 - Display User Posts, Followers & Following
+- Chat With Real Users
+- Post Stories like real Instagram App
+- Receive Notification whenever Someone send's a Message
 - EVERYTHING REAL TIME
 - Sign Out
 
@@ -36,6 +39,8 @@ After cloning this repository, migrate to `insta_clone` folder. Then, follow the
 - Create Firebase Project
 - Enable Authentication
 - Make Firestore Rules
+- Enable Firebase Cloud Messaging Server Key
+- Make a File constants.dart & Store your Server Key There
 - Create Android, iOS Apps
 
 ```bash
