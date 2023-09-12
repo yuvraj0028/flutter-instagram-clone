@@ -5,6 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../utils/colors.dart';
 import '../widgets/post_card.dart';
 import '../utils/utils.dart';
+import '../screens/chat_screen.dart';
+import '../resources/firestore_methods.dart';
+import '../widgets/add_story.dart';
+import '../widgets/stories.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({super.key});
@@ -12,47 +16,82 @@ class FeedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: width > webScreenSize
-          ? null
-          : AppBar(
-              backgroundColor: mobileBackgroundColor,
-              title: SvgPicture.asset(
-                'assets/insta_logo.svg',
-                color: primaryColor,
-                height: 32,
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.message_outlined,
+    return SafeArea(
+      child: Scaffold(
+        appBar: width > webScreenSize
+            ? null
+            : AppBar(
+                backgroundColor: mobileBackgroundColor,
+                title: SvgPicture.asset(
+                  'assets/insta_logo.svg',
+                  color: primaryColor,
+                  height: 32,
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChatScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.message_outlined,
+                    ),
                   ),
+                ],
+              ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await FirestoreMethods().refreshStories();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 70,
+                  child: Row(
+                    children: [
+                      AddStory(),
+                      Stories(),
+                    ],
+                  ),
+                ),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('posts')
+                      .snapshots(),
+                  builder: (context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) => Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: width > webScreenSize ? width * 0.3 : 0,
+                          vertical: width > webScreenSize ? 15 * 0.3 : 0,
+                        ),
+                        child: PostCard(
+                          snap: snapshot.data!.docs[index].data(),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-        builder: (context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) => Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: width > webScreenSize ? width * 0.3 : 0,
-                vertical: width > webScreenSize ? 15 * 0.3 : 0,
-              ),
-              child: PostCard(
-                snap: snapshot.data!.docs[index].data(),
-              ),
-            ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

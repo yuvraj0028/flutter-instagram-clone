@@ -10,7 +10,8 @@ import '../utils/colors.dart';
 import '../utils/utils.dart';
 
 class AddPost extends StatefulWidget {
-  const AddPost({super.key});
+  final bool isPost;
+  const AddPost({required this.isPost, super.key});
 
   @override
   State<AddPost> createState() => _AddPostState();
@@ -30,11 +31,23 @@ class _AddPostState extends State<AddPost> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).getUser;
+    final mediaQuery = MediaQuery.of(context).size;
     return _file == null
-        ? Center(
-            child: IconButton(
-              icon: const Icon(Icons.upload),
-              onPressed: () => _selectImage(context),
+        ? Scaffold(
+            appBar: widget.isPost
+                ? null
+                : AppBar(
+                    leading: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.close)),
+                  ),
+            body: Center(
+              child: IconButton(
+                icon: const Icon(Icons.upload),
+                onPressed: () => _selectImage(context),
+              ),
             ),
           )
         : Scaffold(
@@ -75,35 +88,32 @@ class _AddPostState extends State<AddPost> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        user.photoUrl,
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      child: TextField(
-                        controller: _descriptionController,
-                        decoration: const InputDecoration(
-                          hintText: 'Write a caption...',
-                          border: InputBorder.none,
+                    if (widget.isPost)
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          user.photoUrl,
                         ),
-                        maxLines: 8,
                       ),
-                    ),
-                    SizedBox(
-                      height: 45,
-                      width: 45,
-                      child: AspectRatio(
-                        aspectRatio: 487 / 451,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: MemoryImage(_file!),
-                              fit: BoxFit.fill,
-                              alignment: FractionalOffset.topCenter,
-                            ),
+                    if (widget.isPost)
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.45,
+                        child: TextField(
+                          controller: _descriptionController,
+                          decoration: const InputDecoration(
+                            hintText: 'Write a caption...',
+                            border: InputBorder.none,
                           ),
+                          maxLines: 8,
+                        ),
+                      ),
+                    Container(
+                      height: widget.isPost ? 45 : mediaQuery.height * 0.5,
+                      width: widget.isPost ? 45 : mediaQuery.width * 1,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: MemoryImage(_file!),
+                          fit: widget.isPost ? BoxFit.fill : BoxFit.contain,
+                          alignment: FractionalOffset.topCenter,
                         ),
                       ),
                     ),
@@ -169,14 +179,19 @@ class _AddPostState extends State<AddPost> {
     setState(() {
       _isLoading = true;
     });
+    String res = 'error';
     try {
-      String res = await FirestoreMethods().uploadPost(
-        _descriptionController.text,
-        _file!,
-        uid,
-        username,
-        profImg,
-      );
+      if (widget.isPost) {
+        res = await FirestoreMethods().uploadPost(
+          _descriptionController.text,
+          _file!,
+          uid,
+          username,
+          profImg,
+        );
+      } else {
+        res = await FirestoreMethods().addStory(_file!);
+      }
 
       if (res == 'Success') {
         showSnackBar('Posted!', context);

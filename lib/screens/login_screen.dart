@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.width > webScreenSize
                       ? 30
-                      : 250,
+                      : 200,
                 ),
                 // Flexible(
                 //   flex: 2,

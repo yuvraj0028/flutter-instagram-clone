@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +65,7 @@ class _PostCardState extends State<PostCard> {
                 ),
                 IconButton(
                   onPressed: () {
+                    final user = FirebaseAuth.instance.currentUser;
                     showDialog(
                       context: context,
                       builder: (context) => Dialog(
@@ -73,14 +75,23 @@ class _PostCardState extends State<PostCard> {
                           ),
                           shrinkWrap: true,
                           children: [
-                            'Delete',
+                            user!.uid == widget.snap['uid']
+                                ? 'Delete'
+                                : 'Not Your Post!',
                           ]
                               .map(
                                 (e) => InkWell(
                                   onTap: () async {
-                                    FirestoreMethods()
-                                        .deletePost(widget.snap['postid']);
-                                    Navigator.of(context).pop();
+                                    final user =
+                                        FirebaseAuth.instance.currentUser;
+
+                                    if (user!.uid == widget.snap['uid']) {
+                                      FirestoreMethods()
+                                          .deletePost(widget.snap['postid']);
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      return;
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
@@ -178,7 +189,13 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CommentScreen(snap: widget.snap),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.comment_outlined,
                 ),

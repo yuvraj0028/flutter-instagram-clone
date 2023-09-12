@@ -23,8 +23,8 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
   List<Widget> homeScreenItems = [
     const FeedScreen(),
     const SearchScreen(),
-    const AddPost(),
-    const Text('notif'),
+    const AddPost(isPost: true),
+    Container(),
     ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
   ];
 

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
@@ -124,6 +125,118 @@ class FirestoreMethods {
         await _firestore.collection('users').doc(uid).update({
           'following': FieldValue.arrayUnion([followId]),
         });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> sendMessage(
+    String message,
+    Timestamp time,
+  ) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      final userdata =
+          await _firestore.collection('users').doc(user!.uid).get();
+
+      await _firestore.collection('chats').add({
+        'text': message,
+        'username': userdata['username'],
+        'uid': user.uid,
+        'userimage': userdata['photourl'],
+        'createdAt': time,
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<String> addStory(
+    Uint8List file,
+  ) async {
+    String res = 'Some error occured';
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      final userdata =
+          await _firestore.collection('users').doc(user!.uid).get();
+      String photoUrl =
+          await StorageMethods().uploadImageToStorage('stories', file, true);
+
+      final collectionRef =
+          await _firestore.collection('stories').doc(user.uid).get();
+
+      if (collectionRef.exists) {
+        await _firestore.collection('stories').doc(user.uid).update({
+          'storyimg': FieldValue.arrayUnion([photoUrl]),
+          'postedAt': DateTime.now().day,
+        });
+      } else {
+        await _firestore.collection('stories').doc(user.uid).set({
+          'storyimg': [photoUrl],
+          'username': userdata['username'],
+          'uid': user.uid,
+          'userimage': userdata['photourl'],
+          'postedAt': DateTime.now().day,
+        });
+      }
+
+      res = 'Success';
+    } catch (e) {
+      res = e.toString();
+    }
+
+    return res;
+  }
+
+  Future<List<dynamic>> getStories(String uid) async {
+    List<dynamic> images = [];
+
+    final collectionRef = await _firestore.collection('stories').doc(uid).get();
+
+    images = collectionRef['storyimg'];
+
+    return images;
+  }
+
+  Future<void> refreshStories() async {
+    try {
+      int currDate = DateTime.now().day;
+      List<String> uids = [];
+
+      final users = await _firestore.collection('users').get();
+
+      // users.docs.forEach(
+      //   (element) => uids.add(element.id),
+      // );
+
+      for (var element in users.docs) {
+        uids.add(element.id);
+      }
+
+      final stories = await _firestore.collection('stories').get();
+
+      // stories.docs.forEach((e) async {
+      //   if (uids.contains(e.id)) {
+      //     int storyDate = e['postedAt'];
+      //     if (currDate - storyDate > 0) {
+      //       await _firestore.collection('stories').doc(e.id).delete();
+      //       return;
+      //     }
+      //   }
+      // });
+
+      for (var e in stories.docs) {
+        if (uids.contains(e.id)) {
+          int storyDate = e['postedAt'];
+          if (currDate - storyDate > 0) {
+            await _firestore.collection('stories').doc(e.id).delete();
+            return;
+          }
+        }
       }
     } catch (e) {
       debugPrint(e.toString());

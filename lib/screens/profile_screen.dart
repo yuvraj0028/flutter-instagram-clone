@@ -211,6 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
 
                       return GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
