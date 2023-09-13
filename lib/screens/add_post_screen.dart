@@ -62,7 +62,7 @@ class _AddPostState extends State<AddPost> {
               actions: [
                 TextButton(
                   onPressed: () => _postImage(
-                    user.uid,
+                    user!.uid,
                     user.userName,
                     user.photoUrl,
                   ),
@@ -91,7 +91,7 @@ class _AddPostState extends State<AddPost> {
                     if (widget.isPost)
                       CircleAvatar(
                         backgroundImage: NetworkImage(
-                          user.photoUrl,
+                          user!.photoUrl,
                         ),
                       ),
                     if (widget.isPost)

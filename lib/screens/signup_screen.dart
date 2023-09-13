@@ -195,7 +195,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void selectImage() async {
-    Uint8List im = await pickImage(ImageSource.gallery);
+    Uint8List? im = await pickImage(ImageSource.gallery);
     setState(() {
       _image = im;
     });

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../utils/utils.dart';
 import '../providers/user_provider.dart';
+import '../resources/firestore_methods.dart';
 
 class ResponsiveLayout extends StatefulWidget {
   final Widget webScreenLayout;
@@ -22,6 +23,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   @override
   void initState() {
     addData();
+    updateStories();
     super.initState();
   }
 
@@ -39,6 +41,10 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   void addData() async {
     UserProvider userProvider = Provider.of(context, listen: false);
-    await userProvider.refershUser();
+    await userProvider.refreshUser();
+  }
+
+  void updateStories() async {
+    await FirestoreMethods().refreshStories();
   }
 }

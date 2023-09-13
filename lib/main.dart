@@ -10,7 +10,6 @@ import '../responsive/responsive_screen_layout.dart';
 import '../responsive/mobile_screen_layout.dart';
 import '../responsive/web_screen_layout.dart';
 import '../screens/login_screen.dart';
-import '../resources/firestore_methods.dart';
 import 'api/fcm_api.dart';
 
 void main() async {
@@ -22,7 +21,6 @@ void main() async {
     ),
   );
   await Firebase.initializeApp();
-  await FirestoreMethods().refreshStories();
   await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
