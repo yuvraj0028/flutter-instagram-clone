@@ -19,7 +19,7 @@ class Stories extends StatelessWidget {
               return Container();
             }
             return ListView.builder(
-              reverse: true,
+              physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemCount: snapshot.data!.docs.length,

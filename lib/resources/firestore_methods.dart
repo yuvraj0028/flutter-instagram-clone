@@ -141,7 +141,7 @@ class FirestoreMethods {
       final userdata =
           await _firestore.collection('users').doc(user!.uid).get();
 
-      await _firestore.collection('chats').add({
+      await _firestore.collection('chats').doc(user.uid).set({
         'text': message,
         'username': userdata['username'],
         'uid': user.uid,
@@ -209,32 +209,17 @@ class FirestoreMethods {
 
       final users = await _firestore.collection('users').get();
 
-      // users.docs.forEach(
-      //   (element) => uids.add(element.id),
-      // );
-
       for (var element in users.docs) {
         uids.add(element.id);
       }
 
       final stories = await _firestore.collection('stories').get();
 
-      // stories.docs.forEach((e) async {
-      //   if (uids.contains(e.id)) {
-      //     int storyDate = e['postedAt'];
-      //     if (currDate - storyDate > 0) {
-      //       await _firestore.collection('stories').doc(e.id).delete();
-      //       return;
-      //     }
-      //   }
-      // });
-
       for (var e in stories.docs) {
         if (uids.contains(e.id)) {
           int storyDate = e['postedAt'];
           if (currDate - storyDate > 0) {
             await _firestore.collection('stories').doc(e.id).delete();
-            return;
           }
         }
       }

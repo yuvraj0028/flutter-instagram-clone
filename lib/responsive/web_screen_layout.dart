@@ -6,6 +6,7 @@ import '../screens/add_post_screen.dart';
 import '../screens/feed_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/search_screen.dart';
+import '../screens/chat_screen.dart';
 import '../utils/colors.dart';
 
 class WebScreenLayout extends StatefulWidget {
@@ -84,6 +85,18 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
             icon: Icon(
               Icons.person,
               color: _page == 4 ? primaryColor : secondaryColor,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ChatScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.message_outlined,
             ),
           ),
         ],

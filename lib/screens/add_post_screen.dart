@@ -76,51 +76,53 @@ class _AddPostState extends State<AddPost> {
                 ),
               ],
             ),
-            body: Column(
-              children: [
-                _isLoading
-                    ? const LinearProgressIndicator()
-                    : const Padding(
-                        padding: EdgeInsets.only(top: 0),
-                      ),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (widget.isPost)
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          user!.photoUrl,
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _isLoading
+                      ? const LinearProgressIndicator()
+                      : const Padding(
+                          padding: EdgeInsets.only(top: 0),
                         ),
-                      ),
-                    if (widget.isPost)
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        child: TextField(
-                          controller: _descriptionController,
-                          decoration: const InputDecoration(
-                            hintText: 'Write a caption...',
-                            border: InputBorder.none,
+                  const Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.isPost)
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            user!.photoUrl,
                           ),
-                          maxLines: 8,
+                        ),
+                      if (widget.isPost)
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: TextField(
+                            controller: _descriptionController,
+                            decoration: const InputDecoration(
+                              hintText: 'Write a caption...',
+                              border: InputBorder.none,
+                            ),
+                            maxLines: 8,
+                          ),
+                        ),
+                      Container(
+                        height: widget.isPost ? 45 : mediaQuery.height * 0.5,
+                        width: widget.isPost ? 45 : mediaQuery.width * 1,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: MemoryImage(_file!),
+                            fit: widget.isPost ? BoxFit.fill : BoxFit.contain,
+                            alignment: FractionalOffset.topCenter,
+                          ),
                         ),
                       ),
-                    Container(
-                      height: widget.isPost ? 45 : mediaQuery.height * 0.5,
-                      width: widget.isPost ? 45 : mediaQuery.width * 1,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: MemoryImage(_file!),
-                          fit: widget.isPost ? BoxFit.fill : BoxFit.contain,
-                          alignment: FractionalOffset.topCenter,
-                        ),
-                      ),
-                    ),
-                    const Divider(),
-                  ],
-                )
-              ],
+                      const Divider(),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
   }

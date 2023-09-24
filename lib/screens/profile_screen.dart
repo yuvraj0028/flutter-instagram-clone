@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
   }
 
-  getData() async {
+  void getData() async {
     try {
       var userSnap = await FirebaseFirestore.instance
           .collection('users')
@@ -53,14 +53,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isFollowing = userSnap
           .data()!['followers']
           .contains(FirebaseAuth.instance.currentUser!.uid);
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
 
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -118,7 +122,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             text: 'Sign Out',
                                             textColor: primaryColor,
                                             function: () async {
-                                              await AuthMethods().signOut();
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
@@ -126,6 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       const LoginScreen(),
                                                 ),
                                               );
+                                              await AuthMethods().signOut();
                                             },
                                           )
                                         : isFollowing
@@ -141,10 +145,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         .currentUser!.uid,
                                                     userData['uid'],
                                                   );
-                                                  setState(() {
-                                                    isFollowing = false;
-                                                    followers--;
-                                                  });
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      isFollowing = false;
+                                                      followers--;
+                                                    });
+                                                  }
                                                 },
                                               )
                                             : FollowButton(
@@ -159,10 +165,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         .currentUser!.uid,
                                                     userData['uid'],
                                                   );
-                                                  setState(() {
-                                                    isFollowing = true;
-                                                    followers++;
-                                                  });
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      isFollowing = true;
+                                                      followers++;
+                                                    });
+                                                  }
                                                 },
                                               ),
                                   ],
@@ -197,45 +205,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const Divider(),
-                Flexible(
-                  child: FutureBuilder(
-                    future: FirebaseFirestore.instance
-                        .collection('posts')
-                        .where('uid', isEqualTo: widget.uid)
-                        .get(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-
-                      return GridView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 1.5,
-                          childAspectRatio: 1,
-                        ),
-                        itemCount: (snapshot.data! as dynamic).docs.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot snap =
-                              (snapshot.data! as dynamic).docs[index];
-                          return Image(
-                            image: NetworkImage(
-                              snap['posturl'],
-                            ),
-                            fit: BoxFit.cover,
-                          );
-                        },
+                FutureBuilder(
+                  future: FirebaseFirestore.instance
+                      .collection('posts')
+                      .where('uid', isEqualTo: widget.uid)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
+                    }
 
-                      // return Text('Hello');
-                    },
-                  ),
+                    return GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 1.5,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: (snapshot.data! as dynamic).docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot snap =
+                            (snapshot.data! as dynamic).docs[index];
+                        return Image(
+                          image: NetworkImage(
+                            snap['posturl'],
+                          ),
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    );
+
+                    // return Text('Hello');
+                  },
                 ),
               ],
             ),

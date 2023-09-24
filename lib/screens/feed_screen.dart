@@ -51,10 +51,13 @@ class FeedScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(
+                SizedBox(
                   height: 70,
-                  child: Row(
-                    children: [
+                  width: double.infinity,
+                  child: ListView(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    children: const [
                       AddStory(),
                       Stories(),
                     ],
@@ -63,6 +66,7 @@ class FeedScreen extends StatelessWidget {
                 StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('posts')
+                      .orderBy("datepublished", descending: true)
                       .snapshots(),
                   builder: (context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>

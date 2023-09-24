@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../resources/firestore_methods.dart';
 import '../utils/colors.dart';
-import '../utils/utils.dart';
 import '../widgets/chat_text_card.dart';
 import '../widgets/text_field_input.dart';
 import '../api/fcm_api.dart';
@@ -37,12 +36,10 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: MediaQuery.of(context).size.width > webScreenSize
-            ? null
-            : AppBar(
-                title: const Text('Messages'),
-                backgroundColor: mobileBackgroundColor,
-              ),
+        appBar: AppBar(
+          title: const Text('Messages'),
+          backgroundColor: mobileBackgroundColor,
+        ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('chats')
