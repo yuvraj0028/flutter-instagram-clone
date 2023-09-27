@@ -18,7 +18,6 @@ class PageAnimation {
 
         return SlideTransition(
           position: animation.drive(tween),
-          key: GlobalKey(),
           child: child,
         );
       },
