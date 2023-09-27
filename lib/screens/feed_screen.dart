@@ -9,6 +9,7 @@ import '../screens/chat_screen.dart';
 import '../resources/firestore_methods.dart';
 import '../widgets/add_story.dart';
 import '../widgets/stories.dart';
+import '../utils/page_animation.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({super.key});
@@ -31,9 +32,10 @@ class FeedScreen extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ChatScreen(),
-                        ),
+                        PageAnimation.createRoute(
+                            page: const ChatScreen(),
+                            beginOffset1: 1.0,
+                            beginOffset2: 0.0),
                       );
                     },
                     icon: const Icon(
@@ -46,53 +48,65 @@ class FeedScreen extends StatelessWidget {
           onRefresh: () async {
             await FirestoreMethods().refreshStories();
           },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 70,
-                  width: double.infinity,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      AddStory(),
-                      Stories(),
-                    ],
-                  ),
-                ),
-                StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('posts')
-                      .orderBy("datepublished", descending: true)
-                      .snapshots(),
-                  builder: (context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    return ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+          child: GestureDetector(
+            onHorizontalDragEnd: (details) {
+              if (details.velocity.pixelsPerSecond.dx < 0) {
+                Navigator.of(context).push(
+                  PageAnimation.createRoute(
+                      page: const ChatScreen(),
+                      beginOffset1: 1.0,
+                      beginOffset2: 0.0),
+                );
+              }
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 70,
+                    width: double.infinity,
+                    child: ListView(
                       shrinkWrap: true,
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) => Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: width > webScreenSize ? width * 0.3 : 0,
-                          vertical: width > webScreenSize ? 15 * 0.3 : 0,
+                      scrollDirection: Axis.horizontal,
+                      children: const [
+                        AddStory(),
+                        Stories(),
+                      ],
+                    ),
+                  ),
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('posts')
+                        .orderBy("datepublished", descending: true)
+                        .snapshots(),
+                    builder: (context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) => Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: width > webScreenSize ? width * 0.3 : 0,
+                            vertical: width > webScreenSize ? 15 * 0.3 : 0,
+                          ),
+                          child: PostCard(
+                            snap: snapshot.data!.docs[index].data(),
+                          ),
                         ),
-                        child: PostCard(
-                          snap: snapshot.data!.docs[index].data(),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

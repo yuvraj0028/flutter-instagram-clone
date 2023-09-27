@@ -8,6 +8,7 @@ import '../screens/profile_screen.dart';
 import '../screens/search_screen.dart';
 import '../screens/chat_screen.dart';
 import '../utils/colors.dart';
+import '../utils/page_animation.dart';
 
 class WebScreenLayout extends StatefulWidget {
   const WebScreenLayout({super.key});
@@ -90,9 +91,10 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ChatScreen(),
-                ),
+                PageAnimation.createRoute(
+                    page: const ChatScreen(),
+                    beginOffset1: 1.0,
+                    beginOffset2: 0.0),
               );
             },
             icon: const Icon(
@@ -111,7 +113,8 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
   }
 
   void navigationTapped(int page) {
-    pageController.jumpToPage(page);
+    pageController.animateToPage(page,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
     setState(() {
       _page = page;
     });

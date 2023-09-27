@@ -12,6 +12,7 @@ import '../resources/auth_methods.dart';
 import '../utils/utils.dart';
 import '../widgets/text_field_input.dart';
 import '../screens/login_screen.dart';
+import '../utils/page_animation.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -233,9 +234,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void navigateToLogin() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
+      PageAnimation.createRoute(
+          page: const LoginScreen(), beginOffset1: 0.0, beginOffset2: 1.0),
     );
   }
 }

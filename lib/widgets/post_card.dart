@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:insta_clone/utils/page_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -191,10 +192,12 @@ class _PostCardState extends State<PostCard> {
                     IconButton(
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CommentScreen(snap: widget.snap),
-                          ),
+                          PageAnimation.createRoute(
+                              page: CommentScreen(
+                                snap: widget.snap,
+                              ),
+                              beginOffset1: 0.0,
+                              beginOffset2: 1.0),
                         );
                       },
                       icon: const Icon(
@@ -262,11 +265,12 @@ class _PostCardState extends State<PostCard> {
                       ),
                       InkWell(
                         onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CommentScreen(
-                              snap: widget.snap,
-                            ),
-                          ),
+                          PageAnimation.createRoute(
+                              page: CommentScreen(
+                                snap: widget.snap,
+                              ),
+                              beginOffset1: 0.0,
+                              beginOffset2: 1.0),
                         ),
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 4),

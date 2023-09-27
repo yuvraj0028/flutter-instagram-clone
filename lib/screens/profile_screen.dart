@@ -8,6 +8,7 @@ import '../screens/login_screen.dart';
 import '../utils/colors.dart';
 import '../utils/utils.dart';
 import '../widgets/follow_button.dart';
+import '../utils/page_animation.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -122,12 +123,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             text: 'Sign Out',
                                             textColor: primaryColor,
                                             function: () async {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginScreen(),
-                                                ),
+                                              Navigator.of(context)
+                                                  .pushReplacement(
+                                                PageAnimation.createRoute(
+                                                    page: const LoginScreen(),
+                                                    beginOffset1: 0.0,
+                                                    beginOffset2: 1.0),
                                               );
                                               await AuthMethods().signOut();
                                             },

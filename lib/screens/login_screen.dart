@@ -9,6 +9,7 @@ import '../widgets/text_field_input.dart';
 import '../utils/colors.dart';
 import '../utils/utils.dart';
 import '../screens/signup_screen.dart';
+import '../utils/page_animation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -172,9 +173,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void navigateToSignup() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const SignupScreen(),
-      ),
+      PageAnimation.createRoute(
+          page: const SignupScreen(), beginOffset1: 0.0, beginOffset2: 1.0),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../screens/add_post_screen.dart';
 import '../utils/colors.dart';
 import '../providers/user_provider.dart';
+import '../utils/page_animation.dart';
 
 class AddStory extends StatelessWidget {
   const AddStory({super.key});
@@ -17,11 +18,10 @@ class AddStory extends StatelessWidget {
           ? GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const AddPost(isPost: false);
-                    },
-                  ),
+                  PageAnimation.createRoute(
+                      page: const AddPost(isPost: false),
+                      beginOffset1: 0.0,
+                      beginOffset2: 1.0),
                 );
               },
               child: Padding(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/stories_screen.dart';
 import '../utils/colors.dart';
+import '../utils/page_animation.dart';
 
 class Stories extends StatelessWidget {
   const Stories({super.key});
@@ -44,15 +45,15 @@ class StoriesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StoriesScreen(
-              username: snap['username'],
-              profPic: snap['userimage'],
-              uid: snap['uid'],
-            ),
-          ),
+        Navigator.of(context).push(
+          PageAnimation.createRoute(
+              page: StoriesScreen(
+                username: snap['username'],
+                profPic: snap['userimage'],
+                uid: snap['uid'],
+              ),
+              beginOffset1: 0.0,
+              beginOffset2: 1.0),
         );
       },
       child: Container(

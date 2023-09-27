@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../utils/utils.dart';
 
 import '../screens/profile_screen.dart';
 import '../utils/colors.dart';
+import '../utils/page_animation.dart';
+import '../utils/utils.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -63,11 +64,13 @@ class _SearchScreenState extends State<SearchScreen> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ProfileScreen(
-                            uid: (snapshot.data! as dynamic).docs[index]['uid'],
-                          ),
-                        ),
+                        PageAnimation.createRoute(
+                            page: ProfileScreen(
+                              uid: (snapshot.data! as dynamic).docs[index]
+                                  ['uid'],
+                            ),
+                            beginOffset1: 0.0,
+                            beginOffset2: 1.0),
                       ),
                       child: ListTile(
                         leading: CircleAvatar(
