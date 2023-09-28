@@ -141,7 +141,7 @@ class FirestoreMethods {
       final userdata =
           await _firestore.collection('users').doc(user!.uid).get();
 
-      await _firestore.collection('chats').doc(user.uid).set({
+      await _firestore.collection('chats').add({
         'text': message,
         'username': userdata['username'],
         'uid': user.uid,
