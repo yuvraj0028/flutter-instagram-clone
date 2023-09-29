@@ -51,6 +51,6 @@ After cloning this repository, migrate to `insta_clone` folder. Then, follow the
 
 ## Tech Used
 
-**Server**: Firebase Auth, Firebase Storage, Firebase Firestore
+**Server**: Firebase Auth, Firebase Storage, Firebase Firestore, Firebase Cloud Messaging
 
 **Client**: Flutter, Provider
