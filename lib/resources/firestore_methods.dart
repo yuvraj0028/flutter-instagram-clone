@@ -218,7 +218,7 @@ class FirestoreMethods {
       for (var e in stories.docs) {
         if (uids.contains(e.id)) {
           int storyDate = e['postedAt'];
-          if (currDate - storyDate > 0) {
+          if (currDate - storyDate > 0 || currDate - storyDate < 0) {
             await _firestore.collection('stories').doc(e.id).delete();
           }
         }
