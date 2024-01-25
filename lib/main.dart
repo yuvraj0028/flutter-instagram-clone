@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Insta Clone',
         theme: ThemeData.dark().copyWith(
+          useMaterial3: false,
           scaffoldBackgroundColor: mobileBackgroundColor,
         ),
         home: StreamBuilder(
